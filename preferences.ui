@@ -433,5 +433,58 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>setPhotoPath</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>getDefaultPhotoPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>418</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>setVideoPath</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>getDefaultVideoPath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>423</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>setFilePath</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>getDefaultFilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>429</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>getDefaultPhotoPath()</slot>
+  <slot>getDefaultVideoPath()</slot>
+  <slot>getDefaultFilePath()</slot>
+ </slots>
 </ui>
