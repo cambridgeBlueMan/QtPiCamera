@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>preferences</class>
+ <widget class="QDialog" name="preferences">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -404,7 +404,7 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>preferences</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -420,7 +420,7 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>preferences</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -436,7 +436,7 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
   <connection>
    <sender>setPhotoPath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>preferences</receiver>
    <slot>getDefaultPhotoPath()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -452,7 +452,7 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
   <connection>
    <sender>setVideoPath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>preferences</receiver>
    <slot>getDefaultVideoPath()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -468,7 +468,7 @@ font: 75 11pt &quot;PibotoLt&quot;;</string>
   <connection>
    <sender>setFilePath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>preferences</receiver>
    <slot>getDefaultFilePath()</slot>
    <hints>
     <hint type="sourcelabel">
