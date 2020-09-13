@@ -12,8 +12,8 @@ preferences.ui is a file initially created in QtDesigner.  This file is then tra
 a single Python class called Ui_preferences by pyuic5.  
 """
 from preferences import *
-
-
+from picamera import PiCamera
+camera = PiCamera
 """
 The Code_preferences class is to define all the logic and functions for the program to operate
 Most of these functions will already have been referenced in the designer file via signal/slot connections
@@ -33,11 +33,24 @@ class Code_preferences(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
     def getDefaultFilePath(*args):
-    #         QtWidgets.QFileDialog.setFileMode(args[0],QtWidgets.QFileDialog.Directory)
-        fileName =QtWidgets.QFileDialog.getOpenFileName(args[0],'open File', "/home/pi/Desktop/","All Files (*);;Text Files (*.txt)")
-        print (fileName[0])
+        # the stuff on the right hand side of the "=" in the line below draws an open file dialog
+        # "Set Default File Directory" is the name of the dialog, and 
+        # when this is closed with a directory selected then that directory name will be stored in the variable
+        # "directory" which is on the left hand side of the "="
+        
+        directory = QtWidgets.QFileDialog.getExistingDirectory(args[0], "Set Default File Directory", ui.defaultFilePath.text())
+        
+        # now set the defaultFilePath label in the user interface to the chosen directory
+        
+        ui.defaultFilePath.setText(directory)
+        
     def getDefaultPhotoPath(*args):
+        # when finished you can delete the following line
         print ("in getDefaultPhotoPath")
+        
+        # copy the block of code from getDefaultFilePath function to here and make the appropriate changes to the
+        # dialog name and the original default directory
+         
     def getDefaultVideoPath(*args):
         print ("in getvideo")
         
@@ -49,7 +62,11 @@ Add the additional methods/ data structures etc here
 
 
     """
-      
+class Data_preferences(object):
+    def __init__(self):
+        super().__init__()
+    def addStuff(self,ui):
+        ui.comboBox.addItems(('jpeg', 'png', 'gif', 'bmp', 'yuv', 'rgb', 'rgba', 'bgr', 'bgra', 'raw')) 
 if __name__ == "__main__":
     import sys
     # instiantiate an app object from the QApplication class 
@@ -60,6 +77,8 @@ if __name__ == "__main__":
     ui = Ui_preferences()
     # pass a reference to the preferences object to the setupUi method of the Ui_preferences instance ui
     ui.setupUi(preferences)
+    addData = Data_preferences()
+    addData.addStuff(ui)
     # show it!
     preferences.show()
     sys.exit(app.exec_())

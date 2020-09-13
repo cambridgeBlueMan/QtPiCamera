@@ -113,7 +113,7 @@
        <rect>
         <x>140</x>
         <y>10</y>
-        <width>68</width>
+        <width>161</width>
         <height>22</height>
        </rect>
       </property>
@@ -121,7 +121,7 @@
        <string notr="true">color : blue</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>/home/pi/Pictures</string>
       </property>
      </widget>
      <widget class="QLabel" name="defaultVideoPath">
@@ -129,7 +129,7 @@
        <rect>
         <x>140</x>
         <y>50</y>
-        <width>68</width>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -137,7 +137,7 @@
        <string notr="true">color : blue</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>/home/pi/Videos</string>
       </property>
      </widget>
      <widget class="QLabel" name="defaultFilePath">
@@ -145,7 +145,7 @@
        <rect>
         <x>140</x>
         <y>100</y>
-        <width>68</width>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -153,7 +153,7 @@
        <string notr="true">color : blue</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string>/home/pi/Documents</string>
       </property>
      </widget>
     </widget>
@@ -225,7 +225,7 @@
 font: 11pt &quot;PibotoLt&quot;;</string>
       </property>
       <property name="text">
-       <string>Parameters</string>
+       <string>parms...</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_5">
@@ -241,7 +241,7 @@ font: 11pt &quot;PibotoLt&quot;;</string>
        <string notr="true">font: 11pt &quot;PibotoLt&quot;;</string>
       </property>
       <property name="text">
-       <string>Parameters</string>
+       <string>parms...</string>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox">

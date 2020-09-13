@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'testButtons.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.3
-#
-# WARNING! All changes made in this file will be lost!
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 """
 demoDesigner.ui is a file initially created in QtDesigner.  This file is then translated into
-a single Python class called Ui_demoDesigner by pyuic5.  
+a single Python class called Ui_demoDesigner by pyuic5.
+
+(substitue demoDesigner for the name you gave the Dialo or MianWindow object in Designer)
 """
 from demoDesigner import *
 
