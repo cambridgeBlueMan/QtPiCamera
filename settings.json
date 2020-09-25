@@ -1,0 +1,14 @@
+{
+    "stillFileRoot": "img_",
+    "stillFormat": "jpeg",
+    "videoFormat": "h264",
+    "fileCounter": 34,
+    "vidres": [
+        1600,
+        900
+    ],
+    "imgres": [
+        1600,
+        1200
+    ]
+}

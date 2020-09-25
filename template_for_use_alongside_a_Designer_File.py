@@ -1,15 +1,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 """
-demoDesigner.ui is a file initially created in QtDesigner.  This file is then translated into
-a single Python class called Ui_demoDesigner by pyuic5.
+MainWindow.ui is a file initially created in QtDesigner.  This file is then translated into
+a single Python class called Ui_MainWindow by pyuic5.
 
-(substitue demoDesigner for the name you gave the Dialo or MianWindow object in Designer)
+(substitue MainWindow for the name you gave the Dialo or MianWindow object in Designer)
 """
-from demoDesigner import *
+from camera2 import *
 
 
 """
-The Code_demoDesigner class is to define all the logic and functions for the program to operate
+The Code_MainWindow class is to define all the logic and functions for the program to operate
 Most of these functions will already have been referenced in the designer file via signal/slot connections
 
 Note that this class has to inherit from the relevant parent class. In this case a QDialog,
@@ -21,7 +21,7 @@ This Dialog window with added code will be passed to an instance of the automati
 created Designer class. This designer created class has methods to draw the various widgets and associate them 
 with the passed instance of the code/widget class
 """
-class Code_demoDesigner(QtWidgets.QDialog):
+class Code_MainWindow(QtWidgets.QMainWindow):
 
 
     def __init__(self):
@@ -41,13 +41,13 @@ if __name__ == "__main__":
     # instiantiate an app object from the QApplication class 
     app = QtWidgets.QApplication(sys.argv)
     # instantiate an object containing the logic code
-    demoDesigner = Code_demoDesigner()
-    # instantiate an object from the imported Ui_demoDesigner class
-    ui = Ui_demoDesigner()
-    # pass a reference to the demoDesigner object to the setupUi method of the Ui_demoDesigner instance ui
-    ui.setupUi(demoDesigner)
+    MainWindow = Code_MainWindow()
+    # instantiate an object from the imported Ui_MainWindow class
+    ui = Ui_MainWindow()
+    # pass a reference to the MainWindow object to the setupUi method of the Ui_MainWindow instance ui
+    ui.setupUi(MainWindow)
     # show it!
-    demoDesigner.show()
+    MainWindow.show()
     sys.exit(app.exec_())
 
 
