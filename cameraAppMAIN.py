@@ -8,58 +8,41 @@ from time import sleep
 import os.path
 import datetime
 from os import path
-import json
-#camera = PiCamera() 
-"""
-MainWindow.ui is a file initially created in QtDesigner.  This file is then translated into
-a single Python class called Ui_MainWindow by pyuic5.
-
-(substitue MainWindow for the name you gave the Dialo or MianWindow object in Designer)
-"""
-
-    
+import json    
 from cameraApp import *
 #from settings import camvals
 #print(camvals)
-"""
-The Code_MainWindow class is to define all the logic and functions for the program to operate
-Most of these functions will already have been referenced in the designer file via signal/slot connections
 
-Note that this class has to inherit from the relevant parent class. In this case a QDialog,
-but could as easily be a QMainMenu
-
-remember that this means that this is a Dialog window or other window with some added code/methods
-
-This Dialog window with added code will be passed to an instance of the automatically
-created Designer class. This designer created class has methods to draw the various widgets and associate them 
-with the passed instance of the code/widget class
-"""
 class Code_MainWindow(QtWidgets.QMainWindow):
-
 
     def __init__(self):
         super().__init__()
+        # instantiate a camera
+        self.camera = MyCamera()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.show()
         with open("settings.json", "r") as settings:
             self.camvals = json.load(settings)
             print(self.camvals)
  
     #Add the additional methods/ data structures etc here
-    def setZoomStart(*args):
-        zoomStartVals =  (ui.zStartX.value(), ui.zStartY.value(), ui.zStartHeight.value(), ui.zStartWidth.value())
+    def setZoomStart(self):
+        zoomStartVals =  (self.ui.zStartX.value(), self.ui.zStartY.value(), self.ui.zStartHeight.value(), self.ui.zStartWidth.value())
         print (zoomStartVals)
  
-    def setZoomEnd(*args):
-        zoomEndVals =  (ui.zEndX.value(), ui.zEndY.value(), ui.zEndHeight.value(), ui.zEndWidth.value())
+    def setZoomEnd(self):
+        zoomEndVals =  (self.ui.zEndX.value(), self.ui.zEndY.value(), self.ui.zEndHeight.value(), self.ui.zEndWidth.value())
         print (zoomEndVals)
     
-    def snapAndSave(*args):  
-        filename = args[0].camvals["stillFileRoot"] + '{:04d}'.format(args[0].camvals["fileCounter"]) + '.' + args[0].camvals["stillFormat"]
+    def snapAndSave(self):  
+        filename = self.camvals["stillFileRoot"] + '{:04d}'.format(self.camvals["fileCounter"]) + '.' + self.camvals["stillFormat"]
         # does the file exist? if not then write it
         if path.exists(filename):
             # if file exists then put the picture to a stream object
-            #stream = args[0].imgToStream()
+            #stream = self.imgToStream()
             stream = BytesIO()
-            camera.capture(stream, 'jpeg')
+            self.camera.capture(stream, 'jpeg')
             # now find out what to do with it
             msgBox = QMessageBox()
             msgBox.setWindowTitle("FileExists")
@@ -76,47 +59,46 @@ class Code_MainWindow(QtWidgets.QMainWindow):
                 with open (filename, 'wb') as f:
                     #print(stream)
                     f.write(stream.getbuffer())
-                    args[0].showImage(filename)
+                    self.showImage(filename)
             if ret == QMessageBox.Cancel:
                 # if cancel then get rid of the buffer
                 stream.close()
                 pass
             if ret == 0: #appendButton:
                 # if save with an appended timestamp then save the buffer/stream with the timestamp
-                filename = args[0].camvals["stillFileRoot"] + '{:04d}'.format(args[0].camvals["fileCounter"]) + str(datetime.datetime.now()) + '.'+ args[0].camvals["stillFormat"]
+                filename = self.camvals["stillFileRoot"] + '{:04d}'.format(self.camvals["fileCounter"]) + str(datetime.datetime.now()) + '.'+ self.camvals["stillFormat"]
                 with open (filename, 'wb') as f:
                     f.write(stream.getbuffer())
-                    args[0].showImage(filename)
+                    self.showImage(filename)
         else:
             # take a picture and increment the counter
-            camera.capture(filename)
-            args[0].incFileCounter()
-            args[0].showImage(filename)
+            self.camera.capture(filename)
+            self.incFileCounter()
+            self.showImage(filename)
     
-    def showImage(*args):
-        pixmap = QtGui.QPixmap(args[1])
+    def showImage(self, filename):
+        pixmap = QtGui.QPixmap(filename)
         pixmapResized = pixmap.scaled(800, 600, QtCore.Qt.KeepAspectRatio)
-        ui.imgContainer.setPixmap(pixmapResized) #.scaled(size,Qt.keepAspectRatio))
-    def incFileCounter(*args):
+        self.ui.imgContainer.setPixmap(pixmapResized) #.scaled(size,Qt.keepAspectRatio))
+    def incFileCounter(self):
         # increments the file counter and saves it to the settings file
-        print(args)
-        args[0].camvals["fileCounter"] = args[0].camvals["fileCounter"] + 1
+        print(self)
+        self.camvals["fileCounter"] = self.camvals["fileCounter"] + 1
         with open("settings.json", "w") as settings:
-            json.dump(args[0].camvals, settings, indent = 4)
+            json.dump(self.camvals, settings, indent = 4)
             
-    def imgToStream(*args):
+    def imgToStream(self):
         # gets a picture and puts it intoo a stream/buffer object
         stream = BytesIO()
-        camera.capture(stream, 'jpeg')
+        self.camera.capture(stream, 'jpeg')
         return stream.getbuffer()
     
-    def snapAndHold(*args):
+    def snapAndHold(self):
         print("in snap and hold")
         stream = self.imgToStream()
         # save for this scenario
         with open ("aPic.jpg", 'wb') as f:
-            f.write(stream.getbuffer())
-        # function here to put snap data to a BytesIO() object and then prompt for a save
+            f.write(stream)
         
     def setFileRoot(*args):
         pass
@@ -124,13 +106,13 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         pass
     def isCounter(*args):
         pass
-    def showPreview(*args):
-        if args[1] == True:
-            x = int(camera.resolution[0]/2)
-            y = int(camera.resolution[1]/2)
-            camera.start_preview(fullscreen=False, window = (0, 0,x,y))
+    def showPreview(self, state):
+        if state == True:
+            x = int(self.camera.resolution[0]/2)
+            y = int(self.camera.resolution[1]/2) 
+            self.camera.start_preview(fullscreen=False, window = (0, 0,x,y))
         else:
-            camera.stop_preview()
+            self.camera.stop_preview()
     def setPreviewSize(*args):
         pass 
     
@@ -157,14 +139,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     # instantiate an object containing the logic code
     MainWindow = Code_MainWindow()
-    # instantiate an object from the imported Ui_MainWindow class
-    ui = Ui_MainWindow()
-    # pass a reference to the MainWindow object to the setupUi method of the Ui_MainWindow instance ui
-    ui.setupUi(MainWindow)
-     # instantiate a camera
-    camera = MyCamera()
-    # show it!
-    MainWindow.show()
     sys.exit(app.exec_())
 
 
