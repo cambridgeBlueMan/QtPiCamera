@@ -1,8 +1,9 @@
 {
     "stillFileRoot": "img_",
+    "vidFileRoot": "vid_",
     "stillFormat": "jpeg",
     "videoFormat": "h264",
-    "fileCounter": 37,
+    "fileCounter": 41,
     "vidres": [
         1600,
         900
