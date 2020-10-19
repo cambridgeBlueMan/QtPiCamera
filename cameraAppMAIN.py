@@ -13,8 +13,9 @@ import json
 import vlc
 #import regexp
 from cameraApp import *
-#from settings import camvals
-#print(camvals)
+# my stuff
+import globalfunctions as gf
+#print(camVals)
 
 class Code_MainWindow(QtWidgets.QMainWindow):
 
@@ -26,9 +27,12 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         # now show the Ui
         self.show()
-        with open("settings.json", "r") as settings:
-            self.camvals = json.load(settings)
-            print(self.camvals)
+        self.camVals = gf.getSettingsFile(self.camera)
+        print("***********************************************************************************")
+        print(self.camVals)
+        self.vidres = self.camVals["vidres"]
+        self.imgres = self.camVals["imgres"]
+        self.resolution = tuple(self.imgres)
         # timer is used to update position slider as a video plays
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(100)
@@ -46,7 +50,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         print (zoomEndVals)
     
     def snapAndSave(self):  
-        filename = self.camvals["stillFileRoot"] + '{:04d}'.format(self.camvals["fileCounter"]) + '.' + self.camvals["stillFormat"]
+        filename = self.camVals["stillFileRoot"] + '{:04d}'.format(self.camVals["fileCounter"]) + '.' + self.camVals["stillFormat"]
         # does the file exist? if not then write it
         if path.exists(filename):
             # if file exists then put the picture to a stream object
@@ -76,8 +80,8 @@ class Code_MainWindow(QtWidgets.QMainWindow):
                 pass
             if ret == 0: #appendButton:
                 # if save with an appended timestamp then save the buffer/stream with the timestamp
-                filename = self.camvals["stillFileRoot"] + '{:04d}'.format(self.camvals["fileCounter"]) \
-                + str(datetime.datetime.now()).replace(':','_') + '.'+ self.camvals["stillFormat"]
+                filename = self.camVals["stillFileRoot"] + '{:04d}'.format(self.camVals["fileCounter"]) \
+                + str(datetime.datetime.now()).replace(':','_') + '.'+ self.camVals["stillFormat"]
                 with open (filename, 'wb') as f:
                     f.write(stream.getbuffer())
                     self.showImage(filename)
@@ -95,9 +99,9 @@ class Code_MainWindow(QtWidgets.QMainWindow):
     def incFileCounter(self):
         # increments the file counter and saves it to the settings file
         print(self)
-        self.camvals["fileCounter"] = self.camvals["fileCounter"] + 1
+        self.camVals["fileCounter"] = self.camVals["fileCounter"] + 1
         with open("settings.json", "w") as settings:
-            json.dump(self.camvals, settings, indent = 4)
+            json.dump(self.camVals, settings, indent = 4)
             
     def imgToStream(self):
         # gets a picture and puts it intoo a stream/buffer object
@@ -120,8 +124,8 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         print ("in record vid")
         # start recording video, automatically generate file name
         # i guess this means has to have time stamp
-        self.vidRoot = self.camvals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
-        filename = self.vidRoot + self.camvals["videoFormat"]
+        self.vidRoot = self.camVals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
+        filename = self.vidRoot + self.camVals["videoFormat"]
         self.media = self.vlcObj.media_new(filename)
         self.mediaplayer.set_media(self.media)
         self.camera.start_recording(filename)
@@ -132,12 +136,12 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         if self.camera.recording:
             self.camera.stop_recording() # picamera method
             # make a thumbnail?
-            makeThumbnail = subprocess.run(["ffmpegthumbnailer",  "-i" ,  (self.vidRoot + self.camvals["videoFormat"]),  "-o",  (self.vidRoot + self.camvals["stillFormat"])])
+            makeThumbnail = subprocess.run(["ffmpegthumbnailer",  "-i" ,  (self.vidRoot + self.camVals["videoFormat"]),  "-o",  (self.vidRoot + self.camVals["stillFormat"])])
             
             # following line would set icon, now set in designer, but should really be set
             # as part of the ini process and the current value stored in the json file
             #self.ui.thumbnails.setIconSize(QtCore.QSize(128, 96))
-            filename = self.vidRoot + self.camvals["stillFormat"]
+            filename = self.vidRoot + self.camVals["stillFormat"]
             self.myIcon = QtGui.QIcon(filename) 
             self.myItem = QtWidgets.QListWidgetItem(self.myIcon, filename, self.ui.thumbnails)        
             # then add it to the widget
@@ -246,13 +250,15 @@ class MyCamera(PiCamera):
     def setupCamera(self):
         # retrieve various stuff from a ini file
         #self.filename = filename
-        with open("settings.json", "r") as settings:
-            self.camvals = json.load(settings)
-        self.vidres = self.camvals["vidres"]
-        self.imgres = self.camvals["imgres"]
-        self.resolution = tuple(self.imgres)
-        print(self.resolution)
-        #pass   
+        # with open("settings.json", "r") as settings:
+        #     self.camVals = json.load(settings)
+
+        #self.camVals = gf.getSettingsFile(self.camera)
+        #self.vidres = self.camVals["vidres"]
+        #self.imgres = self.camVals["imgres"]
+        #self.resolution = tuple(self.imgres)
+        #print(self.resolution)
+        pass
         
 if __name__ == "__main__":
     import sys
