@@ -1,3 +1,6 @@
+"""
+Contains some global functions for the cameraApp
+"""
 import pprint
 import json
 import io
@@ -49,7 +52,7 @@ def getSettingsFile(camera):
         # then put this to file
         parmsDictAsStream = io.StringIO("")
         pprint.pprint(parmsDict, parmsDictAsStream)
-        settings = open("settings.ini ", "w")
+        settings = open("settings.ini", "w")
         settings.write(str(parmsDictAsStream.getvalue()))
     return parmsDict
 
