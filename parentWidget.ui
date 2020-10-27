@@ -68,6 +68,26 @@
      </rect>
     </property>
    </widget>
+   <widget class="CompositeSlider" name="widget_2" native="true">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>330</y>
+      <width>191</width>
+      <height>80</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="CompositeDial" name="widget_3" native="true">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>170</y>
+      <width>171</width>
+      <height>80</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

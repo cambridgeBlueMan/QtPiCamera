@@ -11,6 +11,7 @@ import subprocess # allows access to command line
 from os import path
 import json
 import vlc
+import ast
 #import regexp
 from cameraApp import *
 # my stuff
@@ -28,8 +29,9 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         # now show the Ui
         self.show()
         self.camVals = gf.getSettingsFile(self.camera)
-        print("***********************************************************************************")
-        print(self.camVals)
+        #print(type(self.camVals))
+        #print("***********************************************************************************")
+        #print(self.camVals)
         self.vidres = self.camVals["vidres"]
         self.imgres = self.camVals["imgres"]
         self.resolution = tuple(self.imgres)
@@ -39,15 +41,42 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.updateUi)
         # is_paused indicates whether video is paused or not
         self.is_paused = False
-        
+
+    def updateCameraSettings(self, control, value):
+        # print the control name and its value
+        print(self, control, value)
+        # now look for it, if you find it then set the camera and update the dictionary
+        if control in self.camVals:
+            print("found it!")
+            # if its any zoom parm
+            if control[0] == "brightness":
+                print("brightness!")
+                self.camVals[control] = value
+            if control[0] == "saturation":
+                print ("saturation!")
+                self.camVals[control] = value
+            if control[0] == "contrast":
+                print("contrast!")
+                self.camVals[control] = value
+            if control[0] == "sharpness":
+                print("sharpness!")
+                self.camVals[control] = value
+        else:
+            print("not there!")
+            pass
         #Add the additional methods/ data structures etc here
     def setZoomStart(self):
-        zoomStartVals =  (self.ui.zStartX.value(), self.ui.zStartY.value(), self.ui.zStartHeight.value(), self.ui.zStartWidth.value())
+        zoomStartVals =  (self.camVals["zStartX"], self.camVals["zStartY"], self.camVals["zStartWidth"], self.camVals["zStartHeight"])
         print (zoomStartVals)
  
     def setZoomEnd(self):
-        zoomEndVals =  (self.ui.zEndX.value(), self.ui.zEndY.value(), self.ui.zEndHeight.value(), self.ui.zEndWidth.value())
+        zoomEndVals =  (self.camVals["zEndX"], self.camVals["zEndY"], self.camVals["zEndWidth"], self.camVals["zEndHeight"])
         print (zoomEndVals)
+
+    def setZoom(self):
+        zoomVals =  (self.camVals["zoomX"], self.camVals["zoomY"], self.camVals["zoomWidth"], self.camVals["zoomHeight "])
+        print (zoomVals)
+
     
     def snapAndSave(self):  
         filename = self.camVals["stillFileRoot"] + '{:04d}'.format(self.camVals["fileCounter"]) + '.' + self.camVals["stillFormat"]
@@ -266,7 +295,8 @@ if __name__ == "__main__":
     # instiantiate an app object from the QApplication class 
     app = QtWidgets.QApplication(sys.argv)
     # instantiate an object containing the logic code
-    MainWindow = Code_MainWindow()
+    mw = Code_MainWindow()
+    #print(dir(mw))
     sys.exit(app.exec_())
 
 

@@ -1,4 +1,13 @@
-{'AWB_MODES': {'auto': 1,
+"""
+This file contains two dictionaries, defaultCameraSettings and defaultCustomSettings
+
+defaultCameraSettings is derived from dir(camera) and getattr(camera, i0) routines. Various
+items are then removed in order to be able to create a useable json file. i.e. various class
+types are removed
+
+"""
+import json
+defaultCameraSettings = {'AWB_MODES': {'auto': 1,
                'cloudy': 3,
                'flash': 8,
                'fluorescent': 6,
@@ -58,16 +67,15 @@
                    'watercolor': 13},
  'ISO': 0,
  'MAX_FRAMERATE': 120,
- 'MAX_RESOLUTION': PiResolution(width=4056, height=3040),
+ 'MAX_RESOLUTION': (4056, 3040),
  'METER_MODES': {'average': 0, 'backlit': 2, 'matrix': 3, 'spot': 1},
- 'RAW_FORMATS': {'bgra', 'rgba', 'rgb', 'bgr', 'yuv'},
+ 'RAW_FORMATS': ('rgb', 'yuv', 'rgba', 'bgra', 'bgr'),
  'STEREO_MODES': {'none': 0, 'side-by-side': 1, 'top-bottom': 2},
- 'analog_gain': Fraction(0, 1),
+ 'analog_gain': 0,
  'annotate_background': None,
- 'annotate_foreground': <Color "#ffffff">,
  'annotate_frame_num': False,
  'annotate_text_size': 32,
- 'awb_gains': (Fraction(0, 1), Fraction(0, 1)),
+ 'awb_gains': (0,0),
  'awb_mode': 'auto',
  'brightness': 50,
  'clock_mode': 'reset',
@@ -75,22 +83,20 @@
  'color_effects': None,
  'contrast': 0,
  'crop': (0.0, 0.0, 1.0, 1.0),
- 'digital_gain': Fraction(0, 1),
+ 'digital_gain': 0,
  'drc_strength': 'off',
  'exif_tags': {'IFD0.Make': 'RaspberryPi', 'IFD0.Model': 'RP_imx477'},
  'exposure_compensation': 0,
  'exposure_mode': 'auto',
  'exposure_speed': 0,
- 'fileCounter': 41,
  'flash_mode': 'off',
- 'framerate': PiCameraFraction(30, 1),
- 'framerate_delta': Fraction(0, 1),
- 'framerate_range': PiFramerateRange(low=Fraction(30, 1), high=Fraction(30, 1)),
+ 'framerate': (30, 1),
+ 'framerate_delta': 0,
+ 'framerate_range': ((30, 1), (30, 1)),
  'hflip': False,
  'image_denoise': True,
  'image_effect': 'none',
  'image_effect_params': None,
- 'imgres': [1600, 1200],
  'iso': 0,
  'meter_mode': 'average',
  'overlays': [],
@@ -102,21 +108,58 @@
  'previewing': False,
  'raw_format': 'yuv',
  'recording': False,
- 'resolution': PiResolution(width=1920, height=1080),
+ 'resolution': (920, 1080),
  'revision': 'imx477',
  'rotation': 0,
  'saturation': 0,
  'sensor_mode': 0,
  'sharpness': 0,
  'shutter_speed': 0,
- 'stillFileRoot': 'img_',
- 'stillFormat': 'jpeg',
  'still_stats': False,
- 'timestamp': 8809517712,
+ 'timestamp': 3129722522,
  'vflip': False,
- 'vidFileRoot': 'vid_',
- 'videoFormat': 'h264',
  'video_denoise': True,
  'video_stabilization': False,
- 'vidres': [1600, 900],
  'zoom': (0.0, 0.0, 1.0, 1.0)}
+
+defaultCustomSettings = {
+    "stillFileRoot": "img_",
+    "vidFileRoot": "vid_",
+    "stillFormat": "jpeg",
+    "videoFormat": "h264",
+    "fileCounter": 41,
+    "vidres": [
+        1600,
+        900
+    ],
+    "imgres": [
+        1600,
+        1200
+    ],
+    "zStartX" : 0,
+    "zStartY": 0,
+    "zStartWidth": 0,
+    "zStartHeight": 0,
+    "zEndX" : 0,
+    "zEndY": 0,
+    "zEndWidth": 0,
+    "zEndHeight": 0,
+    "zoomX" : 0,
+    "zoomY": 0,
+    "zoomWidth": 0,
+    "zoomHeight": 0
+        }
+# = open(twattock.json, "w")
+
+#x = json.dumps(defaultCameraSettings)
+#f = open("twattock.json", "w")
+#f.write(x)
+#f.close
+
+#f = open("twattock.json", "r")
+#x =f.read()
+#f.close
+
+
+#print(type(x))
+#print(type(json.loads(x)))
