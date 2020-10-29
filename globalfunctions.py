@@ -10,7 +10,7 @@ import defaultcamerasettings as dcs
 from fractions import Fraction
 
 def getSettingsFile(camera):
-    # print("In  settings File!")
+    print("In  settings File!")
     if os.path.isfile("settings.json"):
         try:
             with open("settings.json", "r") as f:

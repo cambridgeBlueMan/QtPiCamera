@@ -270,13 +270,13 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>20</y>
+      <y>10</y>
       <width>441</width>
       <height>781</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="resolutions">
      <attribute name="title">
@@ -555,6 +555,108 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="formLayoutWidget_6">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>350</y>
+        <width>281</width>
+        <height>338</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Meter Modes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="meterModes"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Exposure Modes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="exposureModes"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Flash Modes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="flashModes"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>AWB Modes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="awbModes"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Image Effects</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>DRC Strengths</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Raw Formats</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="imageEffects"/>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="drcStrengths"/>
+       </item>
+       <item row="6" column="1">
+        <widget class="QComboBox" name="rawFormats"/>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="stereoModes"/>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="clockModes"/>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Stereo Modes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Clock Modes</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
     <widget class="QWidget" name="advanced">
      <attribute name="title">
@@ -605,8 +707,8 @@
    <slot>setZoomStart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>266</y>
+     <x>127</x>
+     <y>256</y>
     </hint>
     <hint type="destinationlabel">
      <x>512</x>
@@ -621,8 +723,8 @@
    <slot>setZoomEnd()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>486</y>
+     <x>127</x>
+     <y>476</y>
     </hint>
     <hint type="destinationlabel">
      <x>585</x>
@@ -861,8 +963,8 @@
    <slot>setZoom()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>83</x>
-     <y>713</y>
+     <x>86</x>
+     <y>706</y>
     </hint>
     <hint type="destinationlabel">
      <x>535</x>

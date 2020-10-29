@@ -14,6 +14,7 @@ import vlc
 import ast
 #import regexp
 from cameraApp import *
+from cameraApp2 import *
 # my stuff
 import globalfunctions as gf
 #print(camVals)
@@ -24,14 +25,22 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         # instantiate a camera
         self.camera = MyCamera()
+
+        # build the initial user interface
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # get the settings file
+        self.camVals = gf.getSettingsFile(self.camera)
+        print(type(self.camVals))
+
+        # set ranges for the controls, etc. must come after getting the settings file
+        self.ui2 = Ui_AdditionalSettings()
+        self.ui2.setupUi2(self.ui, self.camVals, self.camera)
+
         # now show the Ui
         self.show()
-        self.camVals = gf.getSettingsFile(self.camera)
-        #print(type(self.camVals))
-        #print("***********************************************************************************")
-        #print(self.camVals)
+
         self.vidres = self.camVals["vidres"]
         self.imgres = self.camVals["imgres"]
         self.resolution = tuple(self.imgres)
@@ -42,38 +51,86 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         # is_paused indicates whether video is paused or not
         self.is_paused = False
 
+    def closeEvent(self, event):
+        """
+        overrides closEvent of QWidget, so we can save the
+        settings file before we quit
+        :param event:
+        :return:
+        """
+        reply = QMessageBox.question(self, 'Window Close', 'Are you sure you want to quit the Camera App?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            x = json.dumps(self.camVals)
+            with open('settings.json', 'w') as f:
+                f.write(x)
+                f.close()
+            event.accept()
+            print('Window closed')
+        else:
+            event.ignore()
+
     def updateCameraSettings(self, control, value):
+        """
+        This is called from any compositeSlider or compositeDial when value changes
+        :param control: name of control (str)
+        :param value:
+        :return:
+        """
         # print the control name and its value
         print(self, control, value)
         # now look for it, if you find it then set the camera and update the dictionary
         if control in self.camVals:
             print("found it!")
             # if its any zoom parm
-            if control[0] == "brightness":
+            if control[0] == "z":
+                self.camVals[control] = value
+            if control == "brightness":
                 print("brightness!")
                 self.camVals[control] = value
-            if control[0] == "saturation":
+                self.camera.brightness = value
+                print(self.camera.brightness)
+            if control == "saturation":
                 print ("saturation!")
                 self.camVals[control] = value
-            if control[0] == "contrast":
+                self.camera.saturation = value
+
+            if control == "contrast":
                 print("contrast!")
                 self.camVals[control] = value
-            if control[0] == "sharpness":
+                self.camera.contrast = value
+
+            if control == "sharpness":
                 print("sharpness!")
                 self.camVals[control] = value
+                self.camera.sharpness  = value
+
         else:
             print("not there!")
             pass
         #Add the additional methods/ data structures etc here
     def setZoomStart(self):
+        """
+        sets the start point of a dynamic zoom
+        :return:
+        """
         zoomStartVals =  (self.camVals["zStartX"], self.camVals["zStartY"], self.camVals["zStartWidth"], self.camVals["zStartHeight"])
         print (zoomStartVals)
  
     def setZoomEnd(self):
+        """
+        sets the end point of a dynamic zoom
+        :return:
+        """
         zoomEndVals =  (self.camVals["zEndX"], self.camVals["zEndY"], self.camVals["zEndWidth"], self.camVals["zEndHeight"])
         print (zoomEndVals)
 
     def setZoom(self):
+        """
+        updates the zoom tuple
+        :return:
+        """
         zoomVals =  (self.camVals["zoomX"], self.camVals["zoomY"], self.camVals["zoomWidth"], self.camVals["zoomHeight "])
         print (zoomVals)
 
@@ -292,9 +349,9 @@ class MyCamera(PiCamera):
 if __name__ == "__main__":
     import sys
    
-    # instiantiate an app object from the QApplication class 
+    # instantiate an app object
     app = QtWidgets.QApplication(sys.argv)
-    # instantiate an object containing the logic code
+    # instantiate a Code_MainWindow object, which is derived from QMainWindow
     mw = Code_MainWindow()
     #print(dir(mw))
     sys.exit(app.exec_())

@@ -102,8 +102,9 @@ class CompositeSlider(qtw.QAbstractSlider):
     def doWork(*args):
         # next line is far from satisfactory
         args[0].parent().parent().parent().parent().parent().parent().updateCameraSettings(args[0].objectName(), args[1])
-        #mw.ui. updateCameraSettings(args[0].objectName(), args[1])
-
+        #print(args[0].parent().parent().parent().parent().parent().parent().objectName())
+        #MainWindow.updateCameraSettings(args[0].objectName(), args[1])
+        #print(dir(MainWindow))
 
         pass
 
