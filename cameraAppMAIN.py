@@ -71,6 +71,11 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         else:
             event.ignore()
 
+    def setCamValFromCombo(self,str):
+        self.camVals[self.sender().objectName()] = str
+        print(self.camVals[self.sender().objectName()])
+        print(self.sender().objectName())
+        #print(str)
     def updateCameraSettings(self, control, value):
         """
         This is called from any compositeSlider or compositeDial when value changes
@@ -82,27 +87,27 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         print(self, control, value)
         # now look for it, if you find it then set the camera and update the dictionary
         if control in self.camVals:
-            print("found it!")
+            #print("found it!")
             # if its any zoom parm
             if control[0] == "z":
                 self.camVals[control] = value
             if control == "brightness":
-                print("brightness!")
+                #print("brightness!")
                 self.camVals[control] = value
                 self.camera.brightness = value
                 print(self.camera.brightness)
             if control == "saturation":
-                print ("saturation!")
+                #print ("saturation!")
                 self.camVals[control] = value
                 self.camera.saturation = value
 
             if control == "contrast":
-                print("contrast!")
+                #print("contrast!")
                 self.camVals[control] = value
                 self.camera.contrast = value
 
             if control == "sharpness":
-                print("sharpness!")
+                #print("sharpness!")
                 self.camVals[control] = value
                 self.camera.sharpness  = value
 

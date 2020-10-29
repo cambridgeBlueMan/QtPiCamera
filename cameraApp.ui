@@ -573,7 +573,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="meterModes"/>
+        <widget class="QComboBox" name="meter_modes"/>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_6">
@@ -583,7 +583,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="exposureModes"/>
+        <widget class="QComboBox" name="exposure_modes"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_7">
@@ -593,7 +593,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="flashModes"/>
+        <widget class="QComboBox" name="flash_modes"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_8">
@@ -603,7 +603,7 @@
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QComboBox" name="awbModes"/>
+        <widget class="QComboBox" name="awb_modes"/>
        </item>
        <item row="4" column="0">
         <widget class="QLabel" name="label_9">
@@ -612,12 +612,18 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="image_effects"/>
+       </item>
        <item row="5" column="0">
         <widget class="QLabel" name="label_10">
          <property name="text">
           <string>DRC Strengths</string>
          </property>
         </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="drc_strengths"/>
        </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_11">
@@ -626,34 +632,18 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="imageEffects"/>
-       </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="drcStrengths"/>
-       </item>
        <item row="6" column="1">
-        <widget class="QComboBox" name="rawFormats"/>
-       </item>
-       <item row="7" column="1">
-        <widget class="QComboBox" name="stereoModes"/>
-       </item>
-       <item row="8" column="1">
-        <widget class="QComboBox" name="clockModes"/>
+        <widget class="QComboBox" name="raw_formats"/>
        </item>
        <item row="7" column="0">
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Stereo Modes</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
         <widget class="QLabel" name="label_17">
          <property name="text">
           <string>Clock Modes</string>
          </property>
         </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="clock_modes"/>
        </item>
       </layout>
      </widget>
@@ -972,6 +962,134 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>meter_modes</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>442</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>474</x>
+     <y>421</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exposure_modes</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>271</x>
+     <y>469</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>482</x>
+     <y>468</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>flash_modes</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>520</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>482</x>
+     <y>559</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>awb_modes</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>548</x>
+     <y>809</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>image_effects</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>279</x>
+     <y>604</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>514</x>
+     <y>781</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>drc_strengths</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>247</x>
+     <y>637</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>623</x>
+     <y>30</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>raw_formats</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>671</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>570</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clock_modes</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCamValFromCombo(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>203</x>
+     <y>746</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>894</x>
+     <y>39</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>setZoomStart()</slot>
@@ -993,5 +1111,7 @@
   <slot>setPosition()</slot>
   <slot>doThumbnailClicked()</slot>
   <slot>setZoom()</slot>
+  <slot>setCamValFromCombo(QString)</slot>
+  <slot>slot2()</slot>
  </slots>
 </ui>
