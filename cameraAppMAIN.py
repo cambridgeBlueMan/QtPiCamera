@@ -72,9 +72,16 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             event.ignore()
 
     def setCamValFromCombo(self,str):
+        """
+        this is called from any of the camera dictioanary combo boxes
+        :param str:
+        :return:
+        """
         self.camVals[self.sender().objectName()] = str
-        print(self.camVals[self.sender().objectName()])
-        print(self.sender().objectName())
+        print("Sender name: ", self.camVals[self.sender().objectName()])
+        print("Value: ", self.sender().objectName())
+        print("camVal value: ", str)
+
         #print(str)
     def updateCameraSettings(self, control, value):
         """
