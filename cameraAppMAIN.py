@@ -25,25 +25,45 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         # instantiate a camera
         self.camera = MyCamera()
-
+        self.comboUpdate = False
         # build the initial user interface
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         # get the settings file
         self.camVals = gf.getSettingsFile(self.camera)
-        print(type(self.camVals))
+        print("back at main!", self.camVals)
 
         # set ranges for the controls, etc. must come after getting the settings file
-        self.ui2 = Ui_AdditionalSettings()
-        self.ui2.setupUi2(self.ui, self.camVals, self.camera)
+        self.widgetSettings = Ui_AdditionalSettings()
 
+        self.widgetSettings.setParmsForWidgets(self.ui, self.camVals, self.camera)
+        self.comboUpdate = self.widgetSettings.addItemsToCombos(self.ui, self.camVals, self.camera)
+        self.widgetSettings.setDefaultValueForCombos(self.ui, self.camVals, self.camera)
+        #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", self.comboUpdate)
+        #self.camVals = dcs.defaultCameraSettings
+        for key in self.camVals:
+            try:
+                if getattr(self.camera, key):
+                    setattr(self.camera, key, self.camVals[key])
+                    ##print(key, ": ",getattr(self.camera, key))
+            except:
+                pass
+                ##print ("not a camera parm!", key)
+            try:
+                if getattr(self.ui, key):
+                    # .setValue()
+                    setattr(key, "setValue", self.camVals[key])
+                    ##print(key)
+            except:
+                pass
+                   ##print("not a widget!", key)
         # now show the Ui
         self.show()
 
         self.vidres = self.camVals["vidres"]
         self.imgres = self.camVals["imgres"]
-        self.resolution = tuple(self.imgres)
+        self.camera.resolution = tuple(self.imgres)
         # timer is used to update position slider as a video plays
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(100)
@@ -62,27 +82,30 @@ class Code_MainWindow(QtWidgets.QMainWindow):
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            x = json.dumps(self.camVals)
+            x = json.dumps(self.camVals, indent=4)
             with open('settings.json', 'w') as f:
                 f.write(x)
                 f.close()
             event.accept()
-            print('Window closed')
+            #print('Window closed')
         else:
             event.ignore()
 
     def setCamValFromCombo(self,str):
         """
-        this is called from any of the camera dictioanary combo boxes
+        this is called from any of the camera dictionary combo boxes
         :param str:
         :return:
         """
-        self.camVals[self.sender().objectName()] = str
-        print("Sender name: ", self.camVals[self.sender().objectName()])
-        print("Value: ", self.sender().objectName())
-        print("camVal value: ", str)
+        #print("in setter", self.comboUpdate)
+        if self.comboUpdate == True:
+            self.camVals[self.sender().objectName()] = str
+            setattr(self.camera,self.sender().objectName(),strgit commit -a)
+            #print("value: ", self.camVals[self.sender().objectName()])
+            #print("Sender name: ", self.sender().objectName())
+            #print("camVal value: ", str)
 
-        #print(str)
+        ##print(str)
     def updateCameraSettings(self, control, value):
         """
         This is called from any compositeSlider or compositeDial when value changes
@@ -90,36 +113,36 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         :param value:
         :return:
         """
-        # print the control name and its value
-        print(self, control, value)
+        # #print the control name and its value
+        #print(self, control, value)
         # now look for it, if you find it then set the camera and update the dictionary
         if control in self.camVals:
-            #print("found it!")
+            ##print("found it!")
             # if its any zoom parm
             if control[0] == "z":
                 self.camVals[control] = value
             if control == "brightness":
-                #print("brightness!")
+                ##print("brightness!")
                 self.camVals[control] = value
                 self.camera.brightness = value
-                print(self.camera.brightness)
+                #print(self.camera.brightness)
             if control == "saturation":
-                #print ("saturation!")
+                ##print ("saturation!")
                 self.camVals[control] = value
                 self.camera.saturation = value
 
             if control == "contrast":
-                #print("contrast!")
+                ##print("contrast!")
                 self.camVals[control] = value
                 self.camera.contrast = value
 
             if control == "sharpness":
-                #print("sharpness!")
+                ##print("sharpness!")
                 self.camVals[control] = value
                 self.camera.sharpness  = value
 
         else:
-            print("not there!")
+            #print("not there!")
             pass
         #Add the additional methods/ data structures etc here
     def setZoomStart(self):
@@ -128,7 +151,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         zoomStartVals =  (self.camVals["zStartX"], self.camVals["zStartY"], self.camVals["zStartWidth"], self.camVals["zStartHeight"])
-        print (zoomStartVals)
+        #print (zoomStartVals)
  
     def setZoomEnd(self):
         """
@@ -136,7 +159,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         zoomEndVals =  (self.camVals["zEndX"], self.camVals["zEndY"], self.camVals["zEndWidth"], self.camVals["zEndHeight"])
-        print (zoomEndVals)
+        #print (zoomEndVals)
 
     def setZoom(self):
         """
@@ -144,7 +167,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         :return:
         """
         zoomVals =  (self.camVals["zoomX"], self.camVals["zoomY"], self.camVals["zoomWidth"], self.camVals["zoomHeight "])
-        print (zoomVals)
+        #print (zoomVals)
 
     
     def snapAndSave(self):  
@@ -169,7 +192,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             if ret == QMessageBox.Save:
                 # if save then overwite existing file
                 with open (filename, 'wb') as f:
-                    #print(stream)
+                    ##print(stream)
                     f.write(stream.getbuffer())
                     self.showImage(filename)
             if ret == QMessageBox.Cancel:
@@ -196,7 +219,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         
     def incFileCounter(self):
         # increments the file counter and saves it to the settings file
-        print(self)
+        #print(self)
         self.camVals["fileCounter"] = self.camVals["fileCounter"] + 1
         with open("settings.json", "w") as settings:
             json.dump(self.camVals, settings, indent = 4)
@@ -208,7 +231,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         return stream.getbuffer()
     
     def snapAndHold(self):
-        print("in snap and hold")
+        #print("in snap and hold")
         stream = self.imgToStream()
         # save for this scenario
         with open ("aPic.jpg", 'wb') as f:
@@ -219,7 +242,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
     #
     #################################################################################################
     def doRecordVid(self, test):
-        print ("in record vid")
+        #print ("in record vid")
         # start recording video, automatically generate file name
         # i guess this means has to have time stamp
         self.vidRoot = self.camVals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
@@ -229,7 +252,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         self.camera.start_recording(filename)
         # need to disable if recording is in progress
     def doStopVid(self, what) :
-        print ("in stop vid")
+        #print ("in stop vid")
         # if camera is recording then stop recording
         if self.camera.recording:
             self.camera.stop_recording() # picamera method
@@ -245,23 +268,23 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             # then add it to the widget
             
         if self.mediaplayer.is_playing() == 1:
-            print("media playing")
+            #print("media playing")
             self.mediaplayer.stop() # vlcObj.vlm_stop_media(self.vlcObj, str_to_bytes(self.media))
             #self.mediaplayer.set_position(0)
                 
     def doPlayVid(self, test): 
-        print (test)
-        print(self.ui.imgContainer)
+        #print (test)
+        #print(self.ui.imgContainer)
         self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
         self.mediaplayer.set_position(0)
-        print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 80, 60))
+        #print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 80, 60))
         self.mediaplayer.play()
-        print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))        
+        #print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))
         self.timer.start()
         # play the current video
         
     def doPauseVid(self, test):
-        print ("in pause vid")
+        #print ("in pause vid")
         if self.mediaplayer.is_playing():
             self.mediaplayer.pause()
             #self.playbutton.setText("Play")
@@ -277,8 +300,8 @@ class Code_MainWindow(QtWidgets.QMainWindow):
       
     def setPosition(self, pos):
         # called from vid pos slider
-        print ("in position vid")
-        print(pos)
+        #print ("in position vid")
+        #print(pos)
         self.timer.stop()
         self.mediaplayer.set_position(pos / 1000.0)
         self.timer.start()
@@ -286,7 +309,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         """
         slot called from the still/video tab selector currentChanged signal
         """
-        print(self, ix)
+        #print(self, ix)
         # if video is selected then instantiate the vlc stuff
         if ix == 1:
             self.vlcObj = vlc.Instance()
@@ -303,13 +326,13 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         # Note that the setValue function only takes values of type int,
         # so we must first convert the corresponding media position.
         media_pos = int(self.mediaplayer.get_position() * 1000)
-        print(self.mediaplayer.get_position())
+        #print(self.mediaplayer.get_position())
         self.ui.vidPosSlider.setValue(media_pos)
         if self.mediaplayer.get_position() == 1.0:
             #self.mediaplayer.set_position(0)
-            #print("hello everybody")
+            ##print("hello everybody")
             self.mediaplayer.stop()
-            print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 240, 180 ))
+            #print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 240, 180 ))
 
         # No need to call this function if nothing is played
         if not self.mediaplayer.is_playing():
@@ -322,7 +345,8 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             #    self.stop()
 
     def doThumbnailClicked(*args):
-        print(args[1].text())
+        #print(args[1].text())
+        pass
         
     def setFileRoot(*args):
         pass
@@ -355,7 +379,7 @@ class MyCamera(PiCamera):
         #self.vidres = self.camVals["vidres"]
         #self.imgres = self.camVals["imgres"]
         #self.resolution = tuple(self.imgres)
-        #print(self.resolution)
+        ##print(self.resolution)
         pass
         
 if __name__ == "__main__":
@@ -365,7 +389,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     # instantiate a Code_MainWindow object, which is derived from QMainWindow
     mw = Code_MainWindow()
-    #print(dir(mw))
+    ##print(dir(mw))
     sys.exit(app.exec_())
 
 
