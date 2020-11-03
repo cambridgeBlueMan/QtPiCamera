@@ -20,24 +20,38 @@ import globalfunctions as gf
 #print(camVals)
 
 class Code_MainWindow(QtWidgets.QMainWindow):
-
+    """
+    Provides the main window for the app to run in. """
     def __init__(self):
         super().__init__()
         # instantiate a camera
         self.camera = MyCamera()
+
+        """
+        while the widgets are all created in the designer file, comboboxes have their items 
+        added later via camerApp 2. Adding these items triggers index/item changed signals
+        We don't want this when initialising the app, since it would set all indices to 0 and 
+        then write these to the central camVals database of values"""
         self.comboUpdate = False
         # build the initial user interface
+
+        # Ui_MainWindow is the main designer generated class. so create one
         self.ui = Ui_MainWindow()
+        # now pass the main window object to it so that the setupUi method can draw all
+        # the widgets into the window
         self.ui.setupUi(self)
 
         # get the settings file
         self.camVals = gf.getSettingsFile(self.camera)
-        print("back at main!", self.camVals)
+        #print("back at main!", self.camVals)
 
         # set ranges for the controls, etc. must come after getting the settings file
+        # spo first create an additional settings object
         self.widgetSettings = Ui_AdditionalSettings()
 
+        # then run initialising methods
         self.widgetSettings.setParmsForWidgets(self.ui, self.camVals, self.camera)
+        # note that on return comboUpdate can now be set to True
         self.comboUpdate = self.widgetSettings.addItemsToCombos(self.ui, self.camVals, self.camera)
         self.widgetSettings.setDefaultValueForCombos(self.ui, self.camVals, self.camera)
         #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", self.comboUpdate)
@@ -60,7 +74,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
                    ##print("not a widget!", key)
         # now show the Ui
         self.show()
-
+        # custom settings
         self.vidres = self.camVals["vidres"]
         self.imgres = self.camVals["imgres"]
         self.camera.resolution = tuple(self.imgres)
@@ -100,7 +114,7 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         #print("in setter", self.comboUpdate)
         if self.comboUpdate == True:
             self.camVals[self.sender().objectName()] = str
-            setattr(self.camera,self.sender().objectName(),strgit commit -a)
+            setattr(self.camera,self.sender().objectName(),str)
             #print("value: ", self.camVals[self.sender().objectName()])
             #print("Sender name: ", self.sender().objectName())
             #print("camVal value: ", str)
@@ -141,6 +155,10 @@ class Code_MainWindow(QtWidgets.QMainWindow):
                 self.camVals[control] = value
                 self.camera.sharpness  = value
 
+            if control == "exposure_compensation":
+                ##print("sharpness!")
+                self.camVals[control] = value
+                self.camera.sharpness  = value
         else:
             #print("not there!")
             pass
@@ -244,9 +262,9 @@ class Code_MainWindow(QtWidgets.QMainWindow):
     def doRecordVid(self, test):
         #print ("in record vid")
         # start recording video, automatically generate file name
-        # i guess this means has to have time stamp
         self.vidRoot = self.camVals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
         filename = self.vidRoot + self.camVals["videoFormat"]
+        
         self.media = self.vlcObj.media_new(filename)
         self.mediaplayer.set_media(self.media)
         self.camera.start_recording(filename)
@@ -255,16 +273,21 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         #print ("in stop vid")
         # if camera is recording then stop recording
         if self.camera.recording:
-            self.camera.stop_recording() # picamera method
-            # make a thumbnail?
-            makeThumbnail = subprocess.run(["ffmpegthumbnailer",  "-i" ,  (self.vidRoot + self.camVals["videoFormat"]),  "-o",  (self.vidRoot + self.camVals["stillFormat"])])
-            
-            # following line would set icon, now set in designer, but should really be set
-            # as part of the ini process and the current value stored in the json file
-            #self.ui.thumbnails.setIconSize(QtCore.QSize(128, 96))
-            filename = self.vidRoot + self.camVals["stillFormat"]
-            self.myIcon = QtGui.QIcon(filename) 
-            self.myItem = QtWidgets.QListWidgetItem(self.myIcon, filename, self.ui.thumbnails)        
+            self.camera.stop_recording()
+            # make a thumbnail
+            # ffmpegthumbnailer
+            """
+            -i: input video filename -o: output filename of the generated image file 
+            (filename ending with .jpg or .jpeg will be in jpeg format, 
+            otherwise png is used)
+            """
+            makeThumbnail = subprocess.run(["ffmpegthumbnailer",  "-i",
+                                            (self.vidRoot + self.camVals["videoFormat"]),
+                                            "-o",  (self.vidRoot + self.camVals["stillFormat"])])
+            self.myIcon = QtGui.QIcon((self.vidRoot + self.camVals["stillFormat"]))
+            self.myItem = QtWidgets.QListWidgetItem(self.myIcon, self.vidRoot.strip("."),
+                                                    self.ui.thumbnails)
+            #self.ui.thumbnails.itemDoubleClicked(lambda: print("an item!"))
             # then add it to the widget
             
         if self.mediaplayer.is_playing() == 1:
@@ -344,8 +367,8 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             #if not self.is_paused:
             #    self.stop()
 
-    def doThumbnailClicked(*args):
-        #print(args[1].text())
+    def fetchItemToPlayer(*args):
+        print(args[1].text())
         pass
         
     def setFileRoot(*args):

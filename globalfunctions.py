@@ -37,7 +37,7 @@ def getSettingsFile(camera):
         with open('settings.json', 'w') as f:
             f.write(x)
             f.close()
-        #return parmsDict
+        return parmsDict
 
 #camera = PiCamera()
 #x = getSettingsFile(camera)

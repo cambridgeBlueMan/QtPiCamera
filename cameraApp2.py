@@ -10,8 +10,9 @@ class Ui_AdditionalSettings(object):
         ui.saturation.setRanges(-100,100,camVals["saturation"])
         ui.contrast.setRanges(-100,100,camVals["contrast"])
         ui.sharpness.setRanges(-100,100,camVals["sharpness"])
+        ui.exposure_compensation.setRanges(-25,25,camVals["exposure_compensation"])
 
-    def addItemsToCombos(selfself, ui, camVals, camera):
+    def addItemsToCombos(self, ui, camVals, camera):
         """
         adds dictionary items drawn from the camera to the cobo boxes.
 

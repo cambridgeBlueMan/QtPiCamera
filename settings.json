@@ -20,32 +20,21 @@
         1.0
     ],
     "digital_gain": 0,
-    "drc_strength": "high",
+    "drc_strength": "off",
     "exposure_compensation": 0,
-    "exposure_mode": "off",
+    "exposure_mode": "auto",
     "exposure_speed": 0,
     "flash_mode": "off",
     "framerate": [
         30,
         1
     ],
-    "framerate_delta": 0,
-    "framerate_range": [
-        [
-            30,
-            1
-        ],
-        [
-            30,
-            1
-        ]
-    ],
     "hflip": false,
     "image_denoise": true,
-    "image_effect": "posterise",
+    "image_effect": "none",
     "image_effect_params": null,
     "iso": 0,
-    "meter_mode": "spot",
+    "meter_mode": "average",
     "overlays": [],
     "preview": null,
     "preview_alpha": 255,
@@ -78,7 +67,7 @@
     "vidFileRoot": "vid_",
     "stillFormat": "jpeg",
     "videoFormat": "h264",
-    "fileCounter": 43,
+    "fileCounter": 41,
     "vidres": [
         1600,
         900

@@ -27,8 +27,6 @@ defaultCameraSettings = {
  'exposure_speed': 0,
  'flash_mode': 'off',
  'framerate': (30, 1),
- 'framerate_delta': 0,
- 'framerate_range': ((30, 1), (30, 1)),
  'hflip': False,
  'image_denoise': True,
  'image_effect': 'none',
