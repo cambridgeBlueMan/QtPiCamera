@@ -260,20 +260,27 @@ class Code_MainWindow(QtWidgets.QMainWindow):
     #
     #################################################################################################
     def doRecordVid(self, test):
-        #print ("in record vid")
+
         # start recording video, automatically generate file name
-        self.vidRoot = self.camVals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
-        filename = self.vidRoot + self.camVals["videoFormat"]
-        
-        self.media = self.vlcObj.media_new(filename)
-        self.mediaplayer.set_media(self.media)
-        self.camera.start_recording(filename)
+        self.vidRoot = self.camVals["vidFileRoot"] + \
+                       str(datetime.datetime.now()).replace(':','_') + '.'
+        # add extension
+        self.filename = self.vidRoot + self.camVals["videoFormat"]
+        #
+        self.camera.start_recording(self.filename)
+
         # need to disable if recording is in progress
-    def doStopVid(self, what) :
-        #print ("in stop vid")
-        # if camera is recording then stop recording
+
+    def doStopVid(self, what):
+        # if camera is recording
         if self.camera.recording:
+            # then stop recording
             self.camera.stop_recording()
+            self.media = self.vlcObj.media_new(self.filename)
+            self.mediaplayer.set_media(self.media)
+            self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
+            self.mediaplayer.set_position(0)
+
             # make a thumbnail
             # ffmpegthumbnailer
             """
@@ -287,8 +294,16 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             self.myIcon = QtGui.QIcon((self.vidRoot + self.camVals["stillFormat"]))
             self.myItem = QtWidgets.QListWidgetItem(self.myIcon, self.vidRoot.strip("."),
                                                     self.ui.thumbnails)
-            #self.ui.thumbnails.itemDoubleClicked(lambda: print("an item!"))
-            # then add it to the widget
+            #self.myItem.
+            self.mediaplayer.play()
+            self.mediaplayer.set_pause(1)
+            """
+            now make another thumbnail and display it on the screen
+            i think this should be a BytesIO object rather than a file
+            
+            Also, I wonder if the thumbnail above should also be a BytesIO since
+            we don't really want these files hanging around after we quit
+            """
             
         if self.mediaplayer.is_playing() == 1:
             #print("media playing")
@@ -298,8 +313,6 @@ class Code_MainWindow(QtWidgets.QMainWindow):
     def doPlayVid(self, test): 
         #print (test)
         #print(self.ui.imgContainer)
-        self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
-        self.mediaplayer.set_position(0)
         #print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 80, 60))
         self.mediaplayer.play()
         #print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))
@@ -367,9 +380,14 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             #if not self.is_paused:
             #    self.stop()
 
-    def fetchItemToPlayer(*args):
-        print(args[1].text())
-        pass
+    def fetchItemToPlayer(self, item):
+        print(item.text() + "." + self.camVals["videoFormat"])
+        self.media = self.vlcObj.media_new(item.text() + "." + self.camVals["videoFormat"])
+        self.mediaplayer.set_media(self.media)
+        self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
+        self.mediaplayer.play()
+        self.mediaplayer.set_pause(1)
+        #pass
         
     def setFileRoot(*args):
         pass

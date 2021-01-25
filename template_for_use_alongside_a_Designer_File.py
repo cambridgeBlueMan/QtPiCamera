@@ -1,11 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from zoomCode.py import Ui_Form
 """
 MainWindow.ui is a file initially created in QtDesigner.  This file is then translated into
 a single Python class called Ui_MainWindow by pyuic5.
 
 (substitue MainWindow for the name you gave the Dialo or MianWindow object in Designer)
 """
-from camera2 import *
+#from camera2 import *
 
 
 """
@@ -21,12 +22,17 @@ This Dialog window with added code will be passed to an instance of the automati
 created Designer class. This designer created class has methods to draw the various widgets and associate them 
 with the passed instance of the code/widget class
 """
-class Code_MainWindow(QtWidgets.QMainWindow):
+class Code_Form(QtWidgets.QMainWindow):
 
 
     def __init__(self):
         super().__init__()
- 
+        # Ui_MainWindow is the main designer generated class. so create one
+        self.ui = Ui_Form()
+        # now pass the main window object to it so that the setupUi method can draw all
+        # the widgets into the window
+        self.ui.setupUi(self)
+        self.show()
     """
 Add the additional methods/ data structures etc here
     def myClick(*args):
@@ -41,13 +47,7 @@ if __name__ == "__main__":
     # instiantiate an app object from the QApplication class 
     app = QtWidgets.QApplication(sys.argv)
     # instantiate an object containing the logic code
-    MainWindow = Code_MainWindow()
-    # instantiate an object from the imported Ui_MainWindow class
-    ui = Ui_MainWindow()
-    # pass a reference to the MainWindow object to the setupUi method of the Ui_MainWindow instance ui
-    ui.setupUi(MainWindow)
-    # show it!
-    MainWindow.show()
+    MainWindow = Code_Form()
     sys.exit(app.exec_())
 
 

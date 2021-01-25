@@ -95,8 +95,9 @@ class Ui_MainWindow(object):
         self.resizePreview.setGeometry(QtCore.QRect(790, 650, 591, 26))
         self.resizePreview.setOrientation(QtCore.Qt.Horizontal)
         self.resizePreview.setObjectName("resizePreview")
-        self.imgContainer = QtWidgets.QLabel(self.centralwidget)
+        self.imgContainer = DDPlayerWindow(self.centralwidget)
         self.imgContainer.setGeometry(QtCore.QRect(670, 40, 800, 600))
+        self.imgContainer.setAcceptDrops(True)
         self.imgContainer.setFrameShape(QtWidgets.QFrame.Box)
         self.imgContainer.setText("")
         self.imgContainer.setObjectName("imgContainer")
@@ -106,6 +107,8 @@ class Ui_MainWindow(object):
         font.setPointSize(10)
         font.setItalic(True)
         self.thumbnails.setFont(font)
+        self.thumbnails.setDragEnabled(True)
+        self.thumbnails.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.thumbnails.setIconSize(QtCore.QSize(128, 96))
         self.thumbnails.setViewMode(QtWidgets.QListView.IconMode)
         self.thumbnails.setWordWrap(True)
@@ -424,5 +427,5 @@ class Ui_MainWindow(object):
         self.mainTab.setTabText(self.mainTab.indexOf(self.advanced), _translate("MainWindow", "Advanced"))
         self.mainTab.setTabText(self.mainTab.indexOf(self.obscure), _translate("MainWindow", "Obscure"))
 
-from mysliders import CompositeSlider
+from mysliders import CompositeSlider, DDPlayerWindow
 import resource_rc

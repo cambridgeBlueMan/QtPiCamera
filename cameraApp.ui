@@ -222,7 +222,7 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="imgContainer">
+   <widget class="DDPlayerWindow" name="imgContainer">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -230,6 +230,9 @@
       <width>800</width>
       <height>600</height>
      </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>true</bool>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -252,6 +255,12 @@
       <pointsize>10</pointsize>
       <italic>true</italic>
      </font>
+    </property>
+    <property name="dragEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::DragOnly</enum>
     </property>
     <property name="iconSize">
      <size>
@@ -726,6 +735,11 @@
    <extends>QWidget</extends>
    <header location="global">mysliders</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DDPlayerWindow</class>
+   <extends>QLabel</extends>
+   <header location="global">mysliders</header>
   </customwidget>
  </customwidgets>
  <resources>
