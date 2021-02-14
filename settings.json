@@ -3,7 +3,7 @@
     "vidFileRoot": "vid_",
     "stillFormat": "jpeg",
     "videoFormat": "h264",
-    "fileCounter": 41,
+    "fileCounter": 54,
     "vidres": [
         1600,
         900
@@ -12,4 +12,5 @@
         1600,
         1200
     ]
+    , "framerate": 25
 }

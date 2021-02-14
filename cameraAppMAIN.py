@@ -8,49 +8,68 @@ from time import sleep
 import os.path
 import datetime
 import subprocess # allows access to command line
+import signal
 from os import path
 import json
 import vlc
 #import regexp
 from cameraApp import *
+import cameraFunctions as cf
 #from settings import camvals
 #print(camvals)
 
-class Code_MainWindow(QtWidgets.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
-        # instantiate a camera
-        self.camera = MyCamera()
+
+        # instantiate a camera from the extended camera class
+        self.camera = MyCamera(self)
+
+        # instantiate the QtDesigner class
         self.ui = Ui_MainWindow()
+        # use its setupUi method to draw the widgets into the main window
         self.ui.setupUi(self)
-        # now show the Ui
+        # now show the main window with its widgets
         self.show()
+
+        # open the settings file and put the contents into the 
         with open("settings.json", "r") as settings:
             self.camvals = json.load(settings)
-            print(self.camvals)
-        # timer is used to update position slider as a video plays
-        self.timer = QtCore.QTimer(self)
-        self.timer.setInterval(100)
-        self.timer.timeout.connect(self.updateUi)
-        # is_paused indicates whether video is paused or not
-        self.is_paused = False
-        
-        #Add the additional methods/ data structures etc here
+            #print(self.camvals)
+
+        # do we want to capture audio?
+        self.getAudio = True
+
+        cf.setupVideoCapture(self)   
+
     def setZoomStart(self):
+        """
+        Creates a tuple containing start values for a pan/zoom
+        """
         zoomStartVals =  (self.ui.zStartX.value(), self.ui.zStartY.value(), self.ui.zStartHeight.value(), self.ui.zStartWidth.value())
-        print (zoomStartVals)
+        #print (zoomStartVals)
  
     def setZoomEnd(self):
+        """
+        Creates a tuple containing end values for a pan/zoom 
+        """
         zoomEndVals =  (self.ui.zEndX.value(), self.ui.zEndY.value(), self.ui.zEndHeight.value(), self.ui.zEndWidth.value())
-        print (zoomEndVals)
+        #print (zoomEndVals)
+
     
     def snapAndSave(self):  
+        """ takes a still picture and automatically generates a file name """
+
+        # get a file name
         filename = self.camvals["stillFileRoot"] + '{:04d}'.format(self.camvals["fileCounter"]) + '.' + self.camvals["stillFormat"]
+
+        # set the settings for the camera
+        self.camera.resolution = tuple(self.imgres)
+
         # does the file exist? if not then write it
         if path.exists(filename):
             # if file exists then put the picture to a stream object
-            #stream = self.imgToStream()
             stream = BytesIO()
             self.camera.capture(stream, 'jpeg')
             # now find out what to do with it
@@ -88,78 +107,109 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             self.showImage(filename)
     
     def showImage(self, filename):
+        """ displays a graphic file in the picture window """
         pixmap = QtGui.QPixmap(filename)
-        pixmapResized = pixmap.scaled(800, 600, QtCore.Qt.KeepAspectRatio)
+        pixmapResized = pixmap.scaled(imgres[0]/2, imgres[1]/2, QtCore.Qt.KeepAspectRatio)
         self.ui.imgContainer.setPixmap(pixmapResized) #.scaled(size,Qt.keepAspectRatio))
+
+        # then add it to the selector widget
+        self.myIcon = QtGui.QIcon(filename) 
+        self.myItem = QtWidgets.QListWidgetItem(self.myIcon, filename, self.ui.thumbnails)        
         
     def incFileCounter(self):
-        # increments the file counter and saves it to the settings file
-        print(self)
+        """ increments the file counter and saves it to the settings file """
+        #print(self)
         self.camvals["fileCounter"] = self.camvals["fileCounter"] + 1
         with open("settings.json", "w") as settings:
             json.dump(self.camvals, settings, indent = 4)
             
     def imgToStream(self):
-        # gets a picture and puts it intoo a stream/buffer object
+        """ uses camera to take a still picture and returns that in a stream/buffer object """
         stream = BytesIO()
         self.camera.capture(stream, 'jpeg')
         return stream.getbuffer()
     
     def snapAndHold(self):
-        print("in snap and hold")
+        """ take a still picture and store in a stream object """
+        #print("in snap and hold")
         stream = self.imgToStream()
         # save for this scenario
         with open ("aPic.jpg", 'wb') as f:
             f.write(stream)
-    # start of video stuff
+
+    
+    #################################################################################################
     #
-    #
+    #                                      start of video stuff
     #
     #################################################################################################
+
     def doRecordVid(self, test):
-        print ("in record vid")
-        # start recording video, automatically generate file name
-        # i guess this means has to have time stamp
-        self.vidRoot = self.camvals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
-        filename = self.vidRoot + self.camvals["videoFormat"]
-        self.media = self.vlcObj.media_new(filename)
-        self.mediaplayer.set_media(self.media)
-        self.camera.start_recording(filename)
-        # need to disable if recording is in progress
-    def doStopVid(self, what) :
-        print ("in stop vid")
+        """ record a video stream to a file with automatically generated name """
+        # do nothing if recording is in progress
+        if self.camera.recording:
+            print("Camera is already recording!")
+        else:
+            # start recording video, automatically generate file name
+            # this means has to have time stamp
+            # various settings for video
+            self.camera.framerate = self.camvals["framerate"]
+            self.vidRoot = self.camvals["vidFileRoot"] + str(datetime.datetime.now()).replace(':','_') + '.'
+            filename = self.vidRoot + self.camvals["videoFormat"]
+            #self.media = self.vlcObj.media_new(filename)
+            #self.mediaplayer.set_media(self.media)
+
+            # record audio if required
+            if self.getAudio == True:
+                self.proc = subprocess.Popen(["rec", (self.vidRoot + "wav"),]) ## Run program
+            # you could capture here a small still
+            self.camera.start_recording(filename)
+
+
+    def doStopVid(self, what):
+         # if camera is playing then stop playing  
+        if self.mediaplayer.is_playing() == 1:
+            #print("media playing")
+            self.mediaplayer.stop() # vlcObj.vlm_stop_media(self.vlcObj, str_to_bytes(self.media))
+            #self.mediaplayer.set_position(0)
         # if camera is recording then stop recording
         if self.camera.recording:
             self.camera.stop_recording() # picamera method
-            # make a thumbnail?
-            makeThumbnail = subprocess.run(["ffmpegthumbnailer",  "-i" ,  (self.vidRoot + self.camvals["videoFormat"]),  "-o",  (self.vidRoot + self.camvals["stillFormat"])])
-            
-            # following line would set icon, now set in designer, but should really be set
-            # as part of the ini process and the current value stored in the json file
-            #self.ui.thumbnails.setIconSize(QtCore.QSize(128, 96))
-            filename = self.vidRoot + self.camvals["stillFormat"]
-            self.myIcon = QtGui.QIcon(filename) 
-            self.myItem = QtWidgets.QListWidgetItem(self.myIcon, filename, self.ui.thumbnails)        
-            # then add it to the widget
-            
-        if self.mediaplayer.is_playing() == 1:
-            print("media playing")
-            self.mediaplayer.stop() # vlcObj.vlm_stop_media(self.vlcObj, str_to_bytes(self.media))
+            if self.getAudio == True:
+                print(type(self.proc))
+                self.proc.send_signal(signal.SIGINT) ## Send interrupt signal
+                vidInput = self.vidRoot + self.camvals["videoFormat"]
+                audioInput = self.vidRoot + "wav"
+                output = self.vidRoot + "mp4"
+                print(vidInput)
+                print(audioInput)
+                print(output)
+                self.proc = subprocess.Popen(["ffmpeg",  "-i",  vidInput,  "-i",  audioInput,  "-c:v",  "copy","-c:a",  "aac",  output])
+                
+            self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
+
             #self.mediaplayer.set_position(0)
+            cf.addToMediaList(self)
+            self.media = self.vlcObj.media_new(output)
+            self.mediaplayer.set_media(self.media)
+            self.mediaplayer.play()
+            self.mediaplayer.set_pause(1)
+
+       
                 
     def doPlayVid(self, test): 
-        print (test)
-        print(self.ui.imgContainer)
+        #print (test)
+        #print(self.ui.imgContainer)
         self.mediaplayer.set_xwindow(int(self.ui.imgContainer.winId()))
         self.mediaplayer.set_position(0)
-        print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 80, 60))
+        #print(self.mediaplayer.video_take_snapshot(0 , "filename.jpeg", 80, 60))
         self.mediaplayer.play()
-        print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))        
+        #print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))        
         self.timer.start()
         # play the current video
         
     def doPauseVid(self, test):
-        print ("in pause vid")
+        #print ("in pause vid")
         if self.mediaplayer.is_playing():
             self.mediaplayer.pause()
             #self.playbutton.setText("Play")
@@ -180,28 +230,30 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         self.timer.stop()
         self.mediaplayer.set_position(pos / 1000.0)
         self.timer.start()
-    def setupVid(self, ix):
+
+    def setCaptureMode(self, ix):
         """
         slot called from the still/video tab selector currentChanged signal
         """
-        print(self, ix)
+        #print(self, ix)
         # if video is selected then instantiate the vlc stuff
         if ix == 1:
-            self.vlcObj = vlc.Instance()
-            self.media = None
-            self.mediaplayer = self.vlcObj.media_player_new()
-            self.is_paused = False
+            cf.setupVideoCapture(self)
+            
         else:
             # clean it all up, still to write
-            pass
+            cf.setupStillCapture(self)
+
     def updateUi(self):
-        """Updates the user interface"""
+        """
+        Updates the user interface
+        """
 
         # Set the slider's position to its corresponding media position 
         # Note that the setValue function only takes values of type int,
         # so we must first convert the corresponding media position.
         media_pos = int(self.mediaplayer.get_position() * 1000)
-        print(self.mediaplayer.get_position())
+        #print(self.mediaplayer.get_position())
         self.ui.vidPosSlider.setValue(media_pos)
         if self.mediaplayer.get_position() == 1.0:
             #self.mediaplayer.set_position(0)
@@ -219,8 +271,17 @@ class Code_MainWindow(QtWidgets.QMainWindow):
             #if not self.is_paused:
             #    self.stop()
 
-    def doThumbnailClicked(*args):
-        print(args[1].text())
+    def doThumbnailClicked(self,widg):
+        # start playing the selected video
+        # put the file name to the video player?
+        self.media = self.vlcObj.media_new(widg.text() + "h264")
+        self.mediaplayer.set_media(self.media)
+        self.mediaplayer.play()
+        #print(self.mediaplayer.video_take_snapshot(0 , "filename2.jpeg", 80, 60))        
+        self.timer.start()
+        # play the current video
+
+        #print(args[1].text())
         
     def setFileRoot(*args):
         pass
@@ -239,29 +300,40 @@ class Code_MainWindow(QtWidgets.QMainWindow):
         pass 
     
 class MyCamera(PiCamera):
-    def __init__(self):
+    def __init__(self, win):
         super().__init__()
-        self.setupCamera()
+        self.setupCamera(win)
         #filename = "/home/pi/Pictures/file1.jpg" 
-    def setupCamera(self):
+    def setupCamera(self, win):
         # retrieve various stuff from a ini file
         #self.filename = filename
         with open("settings.json", "r") as settings:
             self.camvals = json.load(settings)
-        self.vidres = self.camvals["vidres"]
-        self.imgres = self.camvals["imgres"]
-        self.resolution = tuple(self.imgres)
-        print(self.resolution)
+        win.vidres = self.camvals["vidres"]
+        win.imgres = self.camvals["imgres"]
+        win.resolution = tuple(win.imgres)
+        #print(self.resolution)
         #pass   
+
+        #####################################################################
+        # INSTANTIATE A QT TIMER TO UPDATE A POSITION SLIDER AS A V
+        # timer is used to update position slider as a video plays
+        win.timer = QtCore.QTimer(win)
+        win.timer.setInterval(100)
+        win.timer.timeout.connect(win.updateUi)
+        # is_paused indicates whether video is paused or not
+        win.is_paused = False
+        win.vlcObj = vlc.Instance()
+        win.media = None
+        win.mediaplayer = win.vlcObj.media_player_new()
+        win.is_paused = False
         
+
 if __name__ == "__main__":
     import sys
    
     # instiantiate an app object from the QApplication class 
     app = QtWidgets.QApplication(sys.argv)
     # instantiate an object containing the logic code
-    MainWindow = Code_MainWindow()
+    mw = MainWindow()
     sys.exit(app.exec_())
-
-
- 
