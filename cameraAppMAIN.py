@@ -39,7 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
             #print(self.camvals)
 
         # do we want to capture audio?
-        self.getAudio = True
+        self.getAudio = False
 
         cf.setupVideoCapture(self)   
 
