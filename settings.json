@@ -8,7 +8,7 @@
         0
     ],
     "awb_mode": "auto",
-    "brightness": 69,
+    "brightness": 50,
     "clock_mode": "reset",
     "closed": false,
     "color_effects": null,
@@ -31,7 +31,7 @@
     ],
     "hflip": false,
     "image_denoise": true,
-    "image_effect": "sketch",
+    "image_effect": "none",
     "image_effect_params": null,
     "iso": 0,
     "meter_mode": "average",
